@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 filename='D:/measurement_data/20201111/infrared_camera/top_left_1024/1530.bmp'
 img = cv2.imread(filename)
 
