@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 # import data from Excel file
-file_loc = "C:/Users/Nie/Desktop/Git Folder/code/simulation.xlsx"
-# file_loc = "D:/simulation/SOI_antenna/simulation.xlsx"
-df = pd.read_excel(file_loc, sheet_name='Sheet1')
+# file_loc = "C:/Users/Nie/Desktop/Git Folder/code/simulation.xlsx"
+file_loc = "D:/simulation/SOI_antenna/simulation.xlsx"
+df = pd.read_excel(file_loc, sheet_name='Sheet2')
 dperiod = 10.0
 period = np.linspace(580, 780, int((780 - 580) / 10.0 + 1))
 # print(period)

@@ -20,8 +20,8 @@ def fitness_func(xn_sparse):
 
 if __name__ == '__main__':
 
-    N_sparse = 32
-    ArraySize = 256.0
+    N_sparse = 64
+    ArraySize = 256.0*3.0
     average_gap = ArraySize/N_sparse
     xn_sparse = np.zeros(N_sparse)
     min_gap = 4
