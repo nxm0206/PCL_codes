@@ -33,7 +33,7 @@ def AddDropER(r1, r2, a):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     wav = np.linspace(1530, 1570, 20001)
-    Tp, Td = AddDrop(wav, 9, r1=0.7, r2=0.7, a=0.996, neff0=2.31, ng0=4.23, lambda0=1550)
+    Tp, Td = AddDrop(wav, 10, r1=np.sqrt(1-0.1**2), r2=np.sqrt(1-0.1**2), a=0.991, neff0=2.31, ng0=4.23, lambda0=1550)
     Tp_max, Tp_min, Td_max, Td_min = AddDropER(r1=0.7, r2=0.7, a=0.996)
     print("Tp_max: " + str(Tp_max))
     print("Tp_min: " + str(Tp_min))

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cell>
+  <label>FECO_WG_SX_150</label>
+  <pin>
+    <type>waveguide</type>
+    <label>waveguide</label>
+    <position>
+      <x>523.9</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0.0</value>
+      <unit>degree</unit>
+    </angle>
+    <wg_definition>SWGOTE_WG_380</wg_definition>
+  </pin>
+  <pin>
+    <type>edge_coupler</type>
+    <label>edge_coupler</label>
+    <position>
+      <x>0.0</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle_in_air>
+      <value>0.00</value>
+      <unit>degree</unit>
+    </angle_in_air>
+    <angle_in_coupler>
+      <value>0.0</value>
+      <unit>degree</unit>
+    </angle_in_coupler>
+    <coupler_name>FECO_WG_SX_150</coupler_name>
+  </pin>
+</cell>

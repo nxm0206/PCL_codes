@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-file_loc = "D:/GitFolder/PCL_codes/simulation.xlsx"
+file_loc = "D:/GitFolder/PCL_codes/DataToPlot/SideEtchWGA_simulation.xlsx"
 df = pd.read_excel(file_loc, sheet_name='Sheet3', convert_float=False)
 # print(df)
 period = df['period'].values*1e9
@@ -21,6 +21,6 @@ ax.plot(x_angle_fit, y_period_fit , '-', label='fitted')
 # ax.set_ylim(0.2, 1.2)
 # ax.plot(wav, 0.886*wav/1000/126.5*180/np.pi, label='simulation')
 # ax.legend(fontsize=12)
-ax.set_ylabel(r'period(nm)', fontsize=12)
-ax.set_xlabel(r'angle', fontsize=12)
+ax.set_ylabel(r'period(nm)', fontsize=14)
+ax.set_xlabel(r'angle', fontsize=14)
 plt.show()

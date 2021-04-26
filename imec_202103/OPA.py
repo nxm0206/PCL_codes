@@ -25,7 +25,7 @@ from picazzo.phc.holes import *
 from picazzo.wg.bend import WgElBend
 from ipkiss.geometry.shapes.spline import SplineRoundingAlgorithm
 
-
+from ipkiss.io.input_gdsii import InputGdsii
 
 from picazzo.wg.wgdefs.wg_fc import WGFCWgElDefinition
 from picazzo.wg.tapers.auto_taper.auto_taper import WgElPortTaperAuto
@@ -142,8 +142,10 @@ class ReceiverElement(Structure):
     WGclad = PPLayer(process=TECH.PROCESS.WG, purpose=TECH.PURPOSE.LF_AREA)
     FCcore = PPLayer(process=TECH.PROCESS.FC, purpose=TECH.PURPOSE.LF.LINE)#thickness 140
     FCclad = PPLayer(process=TECH.PROCESS.FC, purpose=TECH.PURPOSE.LF_AREA)
+    FCtrench = PPLayer(process=TECH.PROCESS.FC, purpose=TECH.PURPOSE.DF.TRENCH)
     SKTcore = PPLayer(process=TECH.PROCESS.SK, purpose=TECH.PURPOSE.LF.LINE)#thickness 60
     SKTclad = PPLayer(process=TECH.PROCESS.SK, purpose=TECH.PURPOSE.LF_AREA)
+    SKTtrench = PPLayer(process=TECH.PROCESS.SK, purpose=TECH.PURPOSE.DF.TRENCH)
 
     def define_elements(self, elems):
 
@@ -171,10 +173,10 @@ class ReceiverElement(Structure):
         elems += Rectangle(layer=self.WGcore, center=(self.L_straight+self.Ltaper+(self.LFCline+self.LFCetch+self.LSKTetch+self.LWGline)/2.0, 0.0),
                            box_size=((self.LFCline+self.LFCetch+self.LSKTetch+self.LWGline), self.w_w))
 
-        elems += Rectangle(layer=self.FCclad, center=(self.L_straight+self.Ltaper+self.LFCline+self.LFCetch/2.0, 0.0),
+        elems += Rectangle(layer=self.FCtrench, center=(self.L_straight+self.Ltaper+self.LFCline+self.LFCetch/2.0, 0.0),
                            box_size=(self.LFCetch, self.w_w+0.2))
 
-        elems += Rectangle(layer=self.SKTclad, center=(self.L_straight+self.Ltaper+self.LFCline+self.LFCetch+self.LSKTetch/2.0, 0.0),
+        elems += Rectangle(layer=self.SKTtrench, center=(self.L_straight+self.Ltaper+self.LFCline+self.LFCetch+self.LSKTetch/2.0, 0.0),
                            box_size=(self.LSKTetch, self.w_w+0.3))
 
         elems += Rectangle(layer=self.WGcore, center=(self.L_straight+self.Ltaper+self.LFCline+self.LFCetch+self.LSKTetch+self.LWGline+self.LWGetch+self.LWGline/2.0, 0.0),
@@ -256,8 +258,8 @@ class MMI1x2(Structure):
     __name_prefix__ = 'MMI1x2'
     L_in = PositiveNumberProperty(default=1.0)
     L_out = PositiveNumberProperty(default=1.0)
-    L_MMI = PositiveNumberProperty(default=8.17)
-    L_taper = PositiveNumberProperty(default=2.32)
+    L_MMI = PositiveNumberProperty(default=8.64)
+    L_taper = PositiveNumberProperty(default=10.0)
     ww = PositiveNumberProperty(default=1.2)
     w_port = PositiveNumberProperty(default=0.45)
     w_trench = PositiveNumberProperty(default=2.0)
@@ -338,16 +340,16 @@ class MMI1x2(Structure):
 class MMI2x2(Structure):
     __name_prefix__ = 'MMI2x2'
     L_in = NumberProperty(default=0.0)
-    L_out = PositiveNumberProperty(default=1.0)
-    L_MMI = PositiveNumberProperty(default=18.142)
-    L_taper = PositiveNumberProperty(default=9.923)
-    ww = PositiveNumberProperty(default=1.1)
+    L_out = PositiveNumberProperty(default=2.019)
+    L_MMI = PositiveNumberProperty(default=17.566)
+    L_taper = PositiveNumberProperty(default=9.372)
+    ww = PositiveNumberProperty(default=1.14)
     w_port = PositiveNumberProperty(default=0.45)
     w_trench = PositiveNumberProperty(default=2.0)
     w_MMI = PositiveNumberProperty(default=3.9)
     bend_radius = PositiveNumberProperty(default=10.0)
     out_sep = PositiveNumberProperty(default=4.0)
-    sep = PositiveNumberProperty(default=1.354)
+    sep = PositiveNumberProperty(default=1.484)
     min_straight = PositiveNumberProperty(default=1.0)
 
 
@@ -465,8 +467,8 @@ class SplitterTree(Structure):
     __name_prefix__ = 'SplitterTree'
 
 
-    xn = ListProperty(default=np.arange(0, 128.0, 2.0).tolist())
-    x_sep = PositiveNumberProperty(default=60.0)
+    xn = ListProperty(default=np.arange(0, 64.0*10.0, 10.0).tolist())
+    x_sep = PositiveNumberProperty(default=80.0)
     bend_radius = PositiveNumberProperty(default=20.0)
     # print xn
 
@@ -567,7 +569,7 @@ class SplitterTreeTest(Structure):
     gap = PositiveNumberProperty(default=60.0)
     xn = ListProperty(default=[112.5, 105, 90, 60])
     yn = ListProperty(default=[153.75, 97.5, 45, 0])
-    x_sep = PositiveNumberProperty(default=60.0)
+    x_sep = PositiveNumberProperty(default=80.0)
     bend_radius = PositiveNumberProperty(default=20.0)
 
     def define_elements(self,elems):
@@ -579,7 +581,7 @@ class SplitterTreeTest(Structure):
             # yn = np.sum((i + 1) * 2 ** i)
             out_1 = -self.xn[i]/2.0
             out_2 = self.xn[i]/2.0
-            splitter = SRef(Ybranch(out_sep=abs(out_1-out_2), bend_radius=self.bend_radius),
+            splitter = SRef(MMI1x2(out_sep=abs(out_1-out_2), bend_radius=self.bend_radius),
                           position=(self.x_sep*i, self.yn[i]))
             elems += splitter
             # x_span = MMI1x2(out_sep=abs(out_1-out_2), bend_radius=self.bend_radius).size_info().width
@@ -962,7 +964,7 @@ class RingHeaterPN(Structure):
     L_straight = PositiveNumberProperty(default=6.0)
     L_dummy = PositiveNumberProperty(default=1.0)
     shift_dummy = PositiveNumberProperty(default=1.85)
-    angle = NumberProperty(default=45.0)
+    angle = ListProperty(default=[45.0, 45.0, 45.0, 45.0, 45.0, 44.0])
     process_outer = ListProperty(default=[TECH.PROCESS.PBODY,
                      TECH.PROCESS.PPLUS,
                      TECH.PROCESS.P1,
@@ -1004,7 +1006,7 @@ class RingHeaterPN(Structure):
 
             if self.process_inner[i] == TECH.PROCESS.WG:
 
-                angle = self.angle - 7.0
+                angle = self.angle[i] - 7.0
                 layer1_definition = MetalElDefinition(width=self.LW[i], process=self.process_outer[i], purpose=self.purpose_outer[i])
                 bend1 = WgElBend(start_point=(np.sin(angle / 180.0 * np.pi) * radius1[i], np.cos(angle / 180.0 * np.pi) * radius1[i]),
                                  start_angle=-angle,
@@ -1026,7 +1028,7 @@ class RingHeaterPN(Structure):
                 elems += bend2.transform_copy(HMirror(mirror_plane_x=0.0)+Rotation(rotation_center=(0.0, 0.0), rotation=90.0))
 
             else:
-                angle = self.angle
+                angle = self.angle[i]
                 layer1_definition = MetalElDefinition(width=self.LW[i], process=self.process_outer[i], purpose=self.purpose_outer[i])
                 bend1 = WgElBend(start_point=(
                 np.sin(angle / 180.0 * np.pi) * radius1[i], np.cos(angle / 180.0 * np.pi) * radius1[i]),
@@ -1048,30 +1050,40 @@ class RingHeaterPN(Structure):
                 elems += bend2.transform_copy(HMirror(mirror_plane_x=0.0))
 
         cir_layer = PPLayer(process=self.cir_process, purpose=self.cir_purpose)
-        r = 0.123
-        Npts_cir = 16
-        Npts_cir_angle = np.linspace(0, 360, Npts_cir) / 180.0 * np.pi
-        pts_cir = []
-        for i in range(Npts_cir):
-            pts_cir.append((r * np.sin(Npts_cir_angle[i]), r * np.cos(Npts_cir_angle[i])))
+        # r = 0.123
+        # Npts_cir = 25
+        # Npts_cir_angle = np.linspace(0, 360, Npts_cir) / 180.0 * np.pi
+        # pts_cir = []
+        # for i in range(Npts_cir):
+        #     pts_cir.append((r * np.sin(Npts_cir_angle[i]), r * np.cos(Npts_cir_angle[i])))
+
+        pts_cir = [(-0.02000, - 0.12300), (-0.05700, - 0.11100), (-0.08800, - 0.08800), (-0.11100, - 0.05700),
+                 (-0.12300, - 0.02000), (-0.12300, 0.02000), (-0.11100, 0.05700), (-0.08800, 0.08800),
+                 (-0.05700, 0.11100), (-0.02000, 0.12300), (0.02000, 0.12300), (0.05700, 0.11100), (0.08800, 0.08800),
+                 (0.11100, 0.05700), (0.12300, 0.02000), (0.12300, - 0.02000), (0.11100, - 0.05700),
+                 (0.08800, - 0.08800), (0.05700, - 0.11100), (0.02000, - 0.12300)]
 
         dot = Boundary(layer=cir_layer, shape=Shape(points=pts_cir))
 
-        N_cir = 30
-        N_cir_angle = np.linspace(47.0, 133.0, N_cir) / 180.0 * np.pi
-        for i in range(N_cir):
+        N_cir_outer = 27
+        N_cir_angle_outer = np.linspace(self.angle[5]+2.0, 180.0-self.angle[5]-2.0, N_cir_outer) / 180.0 * np.pi
+        for i in range(N_cir_outer):
 
             elems += dot.transform_copy(
-                Translation((np.sin(N_cir_angle[i]) * radius1[5], np.cos(N_cir_angle[i]) * radius1[5])))
+                Translation((np.sin(N_cir_angle_outer[i]) * radius1[5], np.cos(N_cir_angle_outer[i]) * radius1[5])))
 
             elems += dot.transform_copy(
-                Translation((np.sin(N_cir_angle[i]) * radius2[5], np.cos(N_cir_angle[i]) * radius2[5])))
+                Translation((-np.sin(N_cir_angle_outer[i]) * radius1[5], np.cos(N_cir_angle_outer[i]) * radius1[5])))
+
+        N_cir_inner = 20
+        N_cir_angle_inner = np.linspace(self.angle[5] + 2.0, 180.0 - self.angle[5] - 2.0, N_cir_inner) / 180.0 * np.pi
+        for i in range(N_cir_inner):
 
             elems += dot.transform_copy(
-                Translation((-np.sin(N_cir_angle[i]) * radius1[5], np.cos(N_cir_angle[i]) * radius1[5])))
+                Translation((np.sin(N_cir_angle_inner[i]) * radius2[5], np.cos(N_cir_angle_inner[i]) * radius2[5])))
 
             elems += dot.transform_copy(
-                Translation((-np.sin(N_cir_angle[i]) * radius2[5], np.cos(N_cir_angle[i]) * radius2[5])))
+                Translation((-np.sin(N_cir_angle_inner[i]) * radius2[5], np.cos(N_cir_angle_inner[i]) * radius2[5])))
 
         return elems
 
@@ -1080,8 +1092,8 @@ class VernierRingPNHeater(Structure):
     __name_prefix__ = 'VernierRingPNHeater'
     bend_radius1 = PositiveNumberProperty(default=10.3)
     bend_radius2 = PositiveNumberProperty(default=10.0)
-    gap1 = PositiveNumberProperty(default=0.33)
-    gap2 = PositiveNumberProperty(default=0.33)
+    gap1 = PositiveNumberProperty(default=0.38)
+    gap2 = PositiveNumberProperty(default=0.38)
     L_dc1 = NumberProperty(default=0.0)
     L_dc2 = NumberProperty(default=0.0)
     w_port = PositiveNumberProperty(default=0.45)
@@ -1110,20 +1122,21 @@ class VernierRingPNHeater(Structure):
         elems += SRef(WireTaper(taperlen=self.x_shift, w_trench=self.w_trench, process = TECH.PROCESS.SK),
                       position=(0.0, 0.0+self.gap1*2.0+self.w_port*2.0+self.bend_radius1*2.0))
 
-        y_shift=21.56
-        elems += SRef(Transition(), position=(0.0, 0.0+self.gap1*2.0+self.w_port*2.0+self.bend_radius1*2.0)).transform_copy(HMirror(mirror_plane_x=0.0))
+
+        elems += SRef(Transition(), position=(ring1.size_info().width, 0.0))
         elems += SRef(Transition(), position=(0.0, 0.0)).transform_copy(HMirror(mirror_plane_x=0.0))
 
+        elems += SRef(Transition(), position=(0.0, 0.0+self.gap1*2.0+self.w_port*2.0+self.bend_radius1*2.0)).transform_copy(HMirror(mirror_plane_x=0.0))
         elems += SRef(Transition(), position=(self.x_shift+ring2.size_info().width, 0.0+self.gap1*2.0+self.w_port*2.0+self.bend_radius1*2.0))
-        elems += SRef(Transition(), position=(self.x_shift + ring2.size_info().width, y_shift + self.gap1 * 2.0 + self.w_port * 2.0 + self.bend_radius1 * 2.0))
 
-        elems += SRef(Transition(), position=(+ring1.size_info().width, 0.0))
-        elems += SRef(Transition(), position=(self.x_shift, y_shift + self.gap1 * 2.0 + self.w_port * 2.0 + self.bend_radius1 * 2.0)).transform_copy(
-            HMirror(mirror_plane_x=0.0))
+        y_shift = self.gap1*2.0+self.w_port*2.0+self.bend_radius1*2.0+self.gap2*2.0+self.w_port*2.0+self.bend_radius2*2.0
+        elems += SRef(Transition(), position=(self.x_shift + ring2.size_info().width, y_shift))
+        elems += SRef(Transition(), position=(self.x_shift, y_shift)).transform_copy(HMirror(mirror_plane_x=0.0))
 
-        dradius = [1.2625, 1.45, 1.0, 1.6625, 1.975, 1.4125]
+        dradius = [1.2625, 1.45, 1.0, 1.6625, 2.2, 1.4125]
 
-        LW = [1.475, 0.9, 2.0, 1.4, 0.5, 0.625]
+        LW = [1.475, 0.9, 2.0, 1.4, 0.6, 0.625]
+        angle = [45.0, 45.0, 45.0, 45.0, 45.0, 47.0]
         process_outer = [TECH.PROCESS.PBODY,
                          TECH.PROCESS.PPLUS,
                          TECH.PROCESS.P1,
@@ -1137,9 +1150,9 @@ class VernierRingPNHeater(Structure):
                          TECH.PURPOSE.DF.TRENCH,
                          TECH.PURPOSE.DF_AREA]
 
-        process_inner = [TECH.PROCESS.NBODY,
-                         TECH.PROCESS.NPLUS,
-                         TECH.PROCESS.N1,
+        process_inner = [TECH.PROCESS.PBODY,
+                         TECH.PROCESS.PPLUS,
+                         TECH.PROCESS.P1,
                          TECH.PROCESS.M1,
                          TECH.PROCESS.WG,
                          TECH.PROCESS.SAL]
@@ -1153,13 +1166,13 @@ class VernierRingPNHeater(Structure):
         cir_process = TECH.PROCESS.PCON
         cir_purpose = TECH.PURPOSE.DF_AREA
 
-        elems += SRef(RingHeaterPN(LW=LW, bend_radius=self.bend_radius1, dradius=dradius, angle=self.angle,
+        elems += SRef(RingHeaterPN(LW=LW, bend_radius=self.bend_radius1, dradius=dradius, angle=angle,
                                    cir_process=cir_process, cir_purpose=cir_purpose,
                                    process_outer=process_outer, purpose_outer=purpose_outer,
                                    process_inner=process_inner, purpose_inner=purpose_inner),
                       position=(ring1.size_info().width/2.0, 0.0 + self.gap1 + self.w_port + 1.0*self.bend_radius1))
 
-        elems += SRef(RingHeaterPN(LW=LW, bend_radius=self.bend_radius2, dradius=dradius, angle=self.angle,
+        elems += SRef(RingHeaterPN(LW=LW, bend_radius=self.bend_radius2, dradius=dradius, angle=angle,
                                    cir_process=cir_process, cir_purpose=cir_purpose,
                                    process_outer=process_outer, purpose_outer=purpose_outer,
                                    process_inner=process_inner, purpose_inner=purpose_inner),
@@ -1262,7 +1275,7 @@ class PhaseShifterArrayEqual(Structure):
     Shift = PositiveNumberProperty(default=300)
     w_port = PositiveNumberProperty(default=0.45)
     w_trench = PositiveNumberProperty(default=2.0)
-    gap_heater = PositiveNumberProperty(default=6.0)
+    gap_heater = PositiveNumberProperty(default=12.0)
     L_straight = PositiveNumberProperty(default=10.0)
     L_heater = PositiveNumberProperty(default=204.6)
 
@@ -1328,13 +1341,13 @@ class PhaseShifterArrayEqual(Structure):
 
             elems += Rectangle(layer=self.M1Layer,
                                center=centerM1M2,
-                               box_size=(self.M1_width,lengthM1M2-6.0))
+                               box_size=(self.M1_width*2.0,lengthM1M2-6.0))
             elems += Rectangle(layer=self.M2Layer,
                                center=centerM1M2,
-                               box_size=(self.M2_width,lengthM1M2-6.0))
+                               box_size=(self.M2_width*2.0,lengthM1M2-6.0))
             elems += Rectangle(layer=self.FCWLayer,
                                center=center3,
-                               box_size=(self.FCW_width,length3))
+                               box_size=(self.FCW_width*2.0,length3))
 
 
 
@@ -1460,20 +1473,20 @@ class SbendConnection(Structure):
 class PhaseShifterArrayUnequal(Structure):
     __name_prefix__ = 'PhaseShifterArrayEqual'
 
-    xn_start = ListProperty(default=np.arange(0, 256.0, 4.0).tolist())
+    xn_start = ListProperty(default=np.arange(0, 64.0*10.0, 10.0).tolist())
     xn_stop = ListProperty(default=[0.0, 4.1, 27.4, 31.4, 38.8, 42.9, 61.3, 74.7, 91.4, 103.2, 114.5, 124.6, 139.1, 146.1, 165.9, 188.9, 196.6, 208.2, 217.3, 225.4, 231.7, 254.1, 273.2, 277.2, 281.2, 293.9, 315.4, 326.0, 330.6, 343.3, 347.8, 355.8, 378.7, 402.3, 425.7, 449.7, 463.3, 485.6, 493.8, 510.2, 517.8, 529.0, 543.0, 548.7, 572.5, 581.2, 602.4, 607.5, 616.7, 628.2, 635.7, 643.5, 657.6, 670.0, 676.6, 690.9, 696.7, 709.7, 724.7, 729.2, 740.1, 752.3, 759.0, 768.0])
     bend_radius1 = PositiveNumberProperty(default=200)
     bend_radius2 = PositiveNumberProperty(default=300)
     w_port = PositiveNumberProperty(default=0.45)
     w_trench = PositiveNumberProperty(default=2.0)
-    gap_heater = PositiveNumberProperty(default=6.0)
-    L1 = PositiveNumberProperty(default=250.0)
-    L2 = PositiveNumberProperty(default=450.0)
-    L_heater = PositiveNumberProperty(default=204.6)
+    gap_heater = PositiveNumberProperty(default=12.0)
+    L1 = PositiveNumberProperty(default=230.0)
+    L2 = PositiveNumberProperty(default=250.0)
+    L_heater = PositiveNumberProperty(default=399.6)
 
-    M1_width = PositiveNumberProperty(default=0.6)
-    M2_width = PositiveNumberProperty(default=0.9)
-    FCW_width = PositiveNumberProperty(default=0.5)
+    M1_width = PositiveNumberProperty(default=0.6*1.0)
+    M2_width = PositiveNumberProperty(default=0.9*1.0)
+    FCW_width = PositiveNumberProperty(default=0.5*1.0)
     M1Layer = PPLayer(process=TECH.PROCESS.M1, purpose=TECH.PURPOSE.LF.ISLAND)
     M2Layer = PPLayer(process=TECH.PROCESS.M2, purpose=TECH.PURPOSE.LF.ISLAND)
     FCWLayer = PPLayer(process=TECH.PROCESS.FCW, purpose=TECH.PURPOSE.DF.TRENCH)
@@ -1535,14 +1548,14 @@ class PhaseShifterArrayUnequal(Structure):
 
 
         for coors_pair3 in tobe_connected3:
-            elems += SRef(SbendConnectionFill(in_coor=coors_pair3[0], out_coor=coors_pair3[1], w_port=self.M1_width,
+            elems += SRef(SbendConnectionFill(in_coor=coors_pair3[0], out_coor=coors_pair3[1], w_port=self.M1_width*3.0,
                                           process=self.M1process, purpose=self.M1purpose, bend_radius=self.bend_radius1))
 
 
-            elems += SRef(SbendConnectionFill(in_coor=coors_pair3[0], out_coor=coors_pair3[1], w_port=self.M2_width,
+            elems += SRef(SbendConnectionFill(in_coor=coors_pair3[0], out_coor=coors_pair3[1], w_port=self.M2_width*3.0,
                                           process=self.M2process, purpose=self.M2purpose, bend_radius=self.bend_radius1))
 
-            elems += SRef(SbendConnectionFill(in_coor=coors_pair3[0], out_coor=coors_pair3[1], w_port=self.FCW_width,
+            elems += SRef(SbendConnectionFill(in_coor=coors_pair3[0], out_coor=coors_pair3[1], w_port=self.FCW_width*3.0,
                                           process=self.FCWprocess, purpose=self.FCWpurpose, bend_radius=self.bend_radius1))
 
 
@@ -1564,13 +1577,13 @@ class PhaseShifterArrayUnequal(Structure):
             length = self.L_heater
             elems += Rectangle(layer=self.M1Layer,
                                center=center,
-                               box_size=(length, self.M1_width))
+                               box_size=(length, self.M1_width*3.0))
             elems += Rectangle(layer=self.M2Layer,
                                center=center,
-                               box_size=(length, self.M2_width))
+                               box_size=(length, self.M2_width*3.0))
             elems += Rectangle(layer=self.FCWLayer,
                                center=center,
-                               box_size=(length, self.FCW_width))
+                               box_size=(length, self.FCW_width*3.0))
 
 
 
@@ -1893,11 +1906,11 @@ class EvaAntenna(Structure):
 
 
         period = self.L1+self.L2+self.L3+self.L4
-        position1 = (L_trans + self.L_offset + self.L1 / 2.0+y_shift-self.overlay*0.5, 0.0)
+        position1 = (L_trans + self.L_offset + self.L1 + self.L2/2.0 + y_shift + self.overlay*0.5, 0.0)
         position2 = (L_trans + self.L_offset + self.L1+self.L2+self.L3 / 2.0+y_shift, 0.0)
         position3 = (L_trans + self.L_offset + (self.L1+self.L2+self.L3) / 2.0+y_shift, 0.0)
         position4 = (L_trans + self.L_offset + period / 2.0+y_shift, 0.0)
-        unit1 = Rectangle(layer=self.FCcore, center=position1, box_size=(self.L1+self.overlay*1.0, self.w_grating+self.overlay*2.0))
+        unit1 = Rectangle(layer=self.FCcore, center=position1, box_size=(self.L2+self.overlay*1.0, self.w_grating+self.overlay*2.0))
         if self.L3 > 0.0:
             unit2 = Rectangle(layer=self.FCcore, center=position2, box_size=(self.L3, self.w_grating+self.overlay*2.0))
         unit3 = Rectangle(layer=self.WGcore, center=position3, box_size=(self.L1+self.L2+self.L3, self.w_grating))
@@ -1993,6 +2006,11 @@ class EvaAntennaTestTree(Structure):
     gap_end = ListProperty(default=np.linspace(0.15, 0.15, 32).tolist())
     Nperiod = PositiveNumberProperty(default=310)
 
+    # xn_start = ListProperty(default=np.arange(0, 16.0*20.0, 20).tolist())
+    # gap_start = ListProperty(default=np.linspace(0.2, 0.8, 16).tolist())
+    # gap_end = ListProperty(default=np.linspace(0.15, 0.15, 16).tolist())
+    # Nperiod = PositiveNumberProperty(default=1500)
+
 
     M1_width = PositiveNumberProperty(default=0.6)
     M2_width = PositiveNumberProperty(default=0.9)
@@ -2010,8 +2028,8 @@ class EvaAntennaTestTree(Structure):
 
     def define_elements(self, elems):
         N_channel = len(self.xn_start)
-        elems += SRef(reference=SplitterTree(xn=self.xn_start,x_sep=60.0),
-                      position=(-360+172-233.779+170.0+11.779,-15.0-111+108+18.0))
+        elems += SRef(reference=SplitterTree(xn=self.xn_start, x_sep=80.0),
+                      position=(-360+172-233.779+170.0+11.779-80.0-80.0,-15.0-111+108+18.0))
         for i in range(N_channel):
             antenna = EvaAntenna(N_period=self.Nperiod, gap_end=self.gap_end[i], gap_start=self.gap_start[i])
 
@@ -2079,8 +2097,8 @@ class ReceiverMatrix(Structure):
 
 
             for j in range(self.dimension1):
-                elems += self.Receiver.transform_copy(HMirror(mirror_plane_x=0.0)+Translation((i*self.pitch, j*self.pitch)))
-                port = OpticalPort(position=(i*self.pitch, j*self.pitch),
+                elems += self.Receiver.transform_copy(HMirror(mirror_plane_x=0.0)+Translation((i*self.pitch+self.Receiver.size_info().width, j*self.pitch)))
+                port = OpticalPort(position=(i*self.pitch+self.Receiver.size_info().width, j*self.pitch),
                                     angle=0,
                                     wg_definition=WgElDefinition(wg_width=self.w_port, trench_width=self.w_trench))
 
@@ -2090,11 +2108,14 @@ class ReceiverMatrix(Structure):
 
 
                 elems += SRef(reference=WireTaper(taperlen=(self.dimension1-1-i)*self.pitch-bend.size_info().width+self.L_ext),
-                              position=(i*self.pitch+bend.size_info().width, (self.dimension1-1-i)*self.pitch/(self.dimension1) + j*self.pitch))
+                              position=(i*self.pitch+bend.size_info().width+self.Receiver.size_info().width,
+                                        (self.dimension1-1-i)*self.pitch/(self.dimension1) + j*self.pitch))
 
             elems += Rectangle(layer=self.WGclad,
-                               center=(self.pitch*self.dimension1/2.0-self.Receiver.size_info().width,self.pitch/self.dimension1*(self.dimension1**2-1)/2.0),
-                               box_size=(self.pitch*self.dimension1, self.w_port+self.w_trench*2.0+self.pitch/self.dimension1*(self.dimension1**2-1)))
+                               center=((self.pitch*(self.dimension1-1.0)+self.Receiver.size_info().width+self.L_ext)/2.0,
+                                       self.pitch/self.dimension1*(self.dimension1**2-1)/2.0),
+                               box_size=(self.pitch*(self.dimension1-1.0)+self.Receiver.size_info().width+self.L_ext,
+                                         self.w_port+self.w_trench*2.0+self.pitch/self.dimension1*(self.dimension1**2-1)))
 
         return elems
 
@@ -2102,15 +2123,17 @@ class ReceiverMatrix(Structure):
 class ReceiverOPA(Structure):
     __name_prefix__ = 'ReceiverOPA'
 
-    xn_start = ListProperty(default=np.arange(0, 4.0*64, 4.0).tolist())
-    xn_stop = ListProperty(default=np.arange(0, 1.875*64, 1.875).tolist())
+    # xn_start = ListProperty(default=np.arange(0, 4.0*64, 4.0).tolist())
+    # xn_stop = ListProperty(default=np.arange(0, 1.875*64, 1.875).tolist())
+    xn_start = ListProperty(default=np.arange(0, 4.0*16.0, 4.0).tolist())
+    xn_stop = ListProperty(default=np.arange(0, 3.75*16.0, 3.75).tolist())
     bend_radius1 = PositiveNumberProperty(default=300)
     bend_radius2 = PositiveNumberProperty(default=300)
     w_port = PositiveNumberProperty(default=0.45)
     w_trench = PositiveNumberProperty(default=2.0)
-    gap_heater = PositiveNumberProperty(default=6.0)
+    gap_heater = PositiveNumberProperty(default=12.0)
     L1 = PositiveNumberProperty(default=280.0)
-    L2 = PositiveNumberProperty(default=420.0)
+    L2 = PositiveNumberProperty(default=320.0)
     L_heater = PositiveNumberProperty(default=204.6)
 
     M1_width = PositiveNumberProperty(default=0.6)
@@ -2203,16 +2226,66 @@ class ReceiverOPA(Structure):
             elems += Rectangle(layer=self.FCWLayer,
                                center=center,
                                box_size=(length, self.FCW_width))
+        MMItree = SplitterTree(xn=self.xn_start, x_sep=65.0)
+        L_MMItree = MMItree.size_info().width
+        Lbend = np.max(L_bend1)+np.max(L_bend2)+self.L_heater
+        ReMatrix = ReceiverMatrix(dimension1=4)
+        elems += SRef(reference=MMItree, position=(-L_MMItree,-np.mean(self.xn_start)))
+        x = ReMatrix.size_info().width+self.L1+self.L2+self.L_heater
+        elems += SRef(reference=ReMatrix, transformation=HMirror(mirror_plane_x=0.0), position=(x, -np.mean(self.xn_stop)))
 
-        elems += SRef(reference=SplitterTree(xn=self.xn_start,x_sep=60.0), position=(-360,-15.0-111))
-        elems += SRef(reference=ReceiverMatrix(dimension1=8), transformation=HMirror(mirror_plane_x=0.0), position=(2500.0-141.4-1204-140, -21.0-38.063+45-14.602+0.54-30.938))
+        return elems
+
+
+class PolyText(Structure):
+    __name_prefix__ = 'PolyText'
+    text_list = ListProperty(default=['1', '2', '33', '17', 'TX1', 'TX2', 'TX3', 'TX4', 'RX1', 'RX2', 'RX3', 'RX4', 'RX5', 'TRX', 'Si', 'NN', 'PIN', 'MH', 'PP'])
+    height = PositiveNumberProperty(default=8.0)
+    textlayer = PPLayer(process=TECH.PROCESS.LOGOTXT, purpose=TECH.PURPOSE.DF_AREA)
+
+    def define_elements(self, elems):
+        for i in range(len(self.text_list)):
+            elems += PolygonText(self.textlayer, self.text_list[i], (self.height / 2, 10.0*i), (TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM), 1, self.height)
+        return elems
+
+
+class PDKGratingCoupler(Structure):
+
+    PDK_dir = "D:/GitFolder/PCL_codes/imec_202103/Imec2021_PDK/PDK_components/"
+
+    GC = InputGdsii(file(PDK_dir+'grating_couplers/FGCCTE_FCWFC1DC_630_378.gds',"rb"))
+    Layout = GC.read().top_layout()
+    __name__ = Layout.name
+
+    x_shift = DefinitionProperty()
+
+    def define_elements(self, elems):
+        elems = self.Layout.elements
+        return elems
+
+    def x_shift(self):
+        return -30.40
+
+
+class Test_GC(Structure):
+    __name_prefix__ = 'Test_GC'
+    L = PositiveNumberProperty(default=100.0)
+
+    def define_elements(self, elems):
+        x_shift = PDKGratingCoupler().x_shift()
+        elems += SRef(PDKGratingCoupler(), (x_shift, 0))
+        elems += SRef(WireTaper(taperlen=self.L, w_start=0.45, w_end =0.45),position=(0.0,0.0))
+        elems += SRef(PDKGratingCoupler()).transform_copy(Translation((x_shift,0.0))+HMirror(mirror_plane_x=0.0)+Translation((self.L,0.0)))
+
+
+
 
         return elems
 
 
 if __name__ == "__main__":
     print "Starting...."
-    layout = ReceiverOPA(name = "layout")
-    layout.visualize_2d()
-    layout.write_gdsii("test.gds")
+    layout = Test_GC()
+    # layout.visualize_2d()
+    layout.write_gdsii("PDKGC.gds")
     print "Done : GDS2 file created."

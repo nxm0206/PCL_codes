@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cell>
+  <label>FGCOTE_FCWFC1DC_500_325</label>
+  <pin>
+    <type>waveguide</type>
+    <label>waveguide</label>
+    <position>
+      <x>30.4</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0.0</value>
+      <unit>degree</unit>
+    </angle>
+    <wg_definition>SWGOTE_WG_380</wg_definition>
+  </pin>
+  <pin>
+    <type>grating_coupler</type>
+    <label>grating_coupler</label>
+    <position>
+      <x>0.0</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>180.0</value>
+      <unit>degree</unit>
+    </angle>
+    <vertical_angle_in_air>
+      <value>10.0</value>
+      <unit>degree</unit>
+    </vertical_angle_in_air>
+    <vertical_angle_in_oxide>
+      <value>6.91</value>
+      <unit>degree</unit>
+    </vertical_angle_in_oxide>
+    <grating_name>FGCOTE_FCWFC1DC_500_325</grating_name>
+  </pin>
+</cell>

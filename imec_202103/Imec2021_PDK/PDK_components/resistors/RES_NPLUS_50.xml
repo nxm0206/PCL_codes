@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cell>
+  <pin>
+    <type>contact</type>
+    <label>west_M1</label>
+    <position>
+      <x>-16.52</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>180.0</value>
+      <unit>degree</unit>
+    </angle>
+    <layer>M1</layer>
+  </pin>
+  <pin>
+    <type>contact</type>
+    <label>east_M1</label>
+    <position>
+      <x>16.52</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0.0</value>
+      <unit>degree</unit>
+    </angle>
+    <layer>M1</layer>
+  </pin>
+</cell>

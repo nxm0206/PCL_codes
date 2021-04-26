@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cell>
+  <label>TRAOTE_WGSK_380_380</label>
+  <pin>
+    <type>waveguide</type>
+    <label>WG</label>
+    <position>
+      <x>0.0</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>180.0</value>
+      <unit>degree</unit>
+    </angle>
+    <wg_definition>SWGOTE_WG_380</wg_definition>
+  </pin>
+  <pin>
+    <type>waveguide</type>
+    <label>SK</label>
+    <position>
+      <x>20.1</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0.0</value>
+      <unit>degree</unit>
+    </angle>
+    <wg_definition>RWGOTE_SK_380</wg_definition>
+  </pin>
+</cell>

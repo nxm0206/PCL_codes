@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cell>
+  <label>BP_M1M2_80_60</label>
+  <pin>
+    <type>contact</type>
+    <label>pad_M2</label>
+    <position>
+      <x>0.0</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0</value>
+      <unit>degree</unit>
+    </angle>
+    <layer>M2</layer>
+  </pin>
+  <pin>
+    <type>contact</type>
+    <label>pad_M1</label>
+    <position>
+      <x>0.0</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0</value>
+      <unit>degree</unit>
+    </angle>
+    <layer>M1</layer>
+  </pin>
+  <pin>
+    <type>contact</type>
+    <label>pad_PASS2</label>
+    <position>
+      <x>0.0</x>
+      <y>0.0</y>
+      <unit>um</unit>
+    </position>
+    <angle>
+      <value>0</value>
+      <unit>degree</unit>
+    </angle>
+    <layer>PASS2</layer>
+  </pin>
+</cell>

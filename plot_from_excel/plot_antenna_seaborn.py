@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 import seaborn as sns
 
 # import data from Excels
-file_loc = "D:/GitFolder/PCL_codes/simulation.xlsx"
+file_loc = "D:/GitFolder/PCL_codes/DataToPlot/SideEtchWGA_simulation.xlsx"
 # file_loc = "C:/Users/Nie/Desktop/Git Folder/code/simulation.xlsx"
 df = pd.read_excel(file_loc, sheet_name='Sheet2', convert_float=False)
 df['period(nm)'] = df['period(nm)'].values* 1e9
@@ -39,7 +39,7 @@ selected_df = df.loc[df[r'angle $\in$ '+str(angle_range)] == 'Yes']
 # print(df.loc[345])
 
 
-# fit data
+# fit p_dw
 x_dw = selected_df.loc[:,'dw(nm)'].values
 y_period = selected_df.loc[:,'period(nm)'].values
 
@@ -48,32 +48,34 @@ p_dw_fit = np.polyfit(x_dw, y_period, 3)
 p_dw = np.poly1d(p_dw_fit)
 x_dw_fit = np.arange(np.min(x_dw), np.max(x_dw), 0.01)
 y_period_fit = p_dw(x_dw_fit)
+print("----------------------------------------")
+print("p_dw function:")
 print(p_dw)
+print("----------------------------------------")
 
 
-
+# fit dw_beta
 x_beta = selected_df.loc[:,'emission rate(dB/$\mu m$)'].values
 y_dw = selected_df.loc[:,'dw(nm)'].values
 # print(beta)
 
 def dw_beta(x, a, b, c, d , e, f):
-    # y1 = [a*i**2 +b*i +c for i in x if i <= -11]
-    # y2 = [d*np.exp(e*i) + f for i in x if i > -11]
-    # y = y1 + y2
-    y = a*x**4 + b*x**3 + c*x**2 + d*x + e*np.exp(x)  + f
+    y = a*x**4 + b*x**3 + c*x**2 + d*x + e*np.exp(x) + f
     return y
 
 
 popt, _ = curve_fit(dw_beta, x_beta, y_dw)
 # dw_beta = np.poly1d(dw_beta_fit)
+print("----------------------------------------")
+print("dw_beta function (a*x**4 + b*x**3 + c*x**2 + d*x + e*np.exp(x) + f) \n parameters [a, b, c, d, f]:")
 print(popt)
+print("----------------------------------------")
 a, b, c, d, e, f = popt
 
 
 x_beta_fit = np.arange(np.min(x_beta), np.max(x_beta), 0.01)
 y_dw_fit = dw_beta(x_beta_fit, a, b, c, d, e, f)
-# print(len(x_beta_fit))
-# print(len(y_dw_fit))
+
 
 
 
