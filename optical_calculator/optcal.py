@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 import wx
-import numpy as np
+from numpy import log10
 
 def is_number(s):
     try:
@@ -20,8 +20,8 @@ class OptCalFrame(wx.Frame):
         tab1 = WavlFreqWavn(nb)
         tab2 = DeciPerc(nb)
 
-        nb.AddPage(tab1, "\u03BB\u21CC\u03bD\u21CC\u03C3")
-        nb.AddPage(tab2, "dB,dBm\u21CC\u0025,mW")
+        nb.AddPage(tab1, "Conversion 1")
+        nb.AddPage(tab2, "Conversion 2")
         # self.panel = CalPanel(self)
         sizer = wx.BoxSizer()
         sizer.Add(nb, 1, wx.EXPAND)
@@ -178,12 +178,18 @@ class WavlFreqWavn(wx.Panel):
         # ---------------add author information-------------------------------------------------
         if True:
             BottomLayerSizer.AddStretchSpacer(1)
-            font_author_info = wx.Font(7, family=wx.ROMAN, style=wx.NORMAL, weight=wx.LIGHT,
+            font_author_info1 = wx.Font(15, family=wx.ROMAN, style=wx.NORMAL, weight=wx.BOLD,
                                        encoding=wx.FONTENCODING_SYSTEM)
-            author_info = 'By Xiaomin Nie, Copyright © 2020 Shenzhen, China'
-            author_text = wx.StaticText(self, label=author_info, style=wx.ALIGN_CENTRE)
-            author_text.SetFont(font_author_info)
-            BottomLayerSizer.Add(author_text, 0, wx.ALL | wx.EXPAND, 5)
+            author_info1 = '\u2717\u1320 \u27FF \u2600 \u21DC \u0BF6\u10EF'
+            author_text1 = wx.StaticText(self, label=author_info1, style=wx.ALIGN_CENTRE)
+            author_text1.SetFont(font_author_info1)
+            font_author_info2 = wx.Font(7, family=wx.ROMAN, style=wx.NORMAL, weight=wx.LIGHT,
+                                       encoding=wx.FONTENCODING_SYSTEM)
+            author_info2 = 'Copyright © 2021 Shenzhen, China'
+            author_text2 = wx.StaticText(self, label=author_info2, style=wx.ALIGN_CENTRE)
+            author_text2.SetFont(font_author_info2)
+            BottomLayerSizer.Add(author_text1, 0, wx.ALL | wx.EXPAND, 5)
+            BottomLayerSizer.Add(author_text2, 0, wx.ALL | wx.EXPAND, 5)
 
         # ---------------add statuBar for info display-------------------------------------------------
         if True:
@@ -619,10 +625,10 @@ class WavlFreqWavn(wx.Panel):
 
     def on_key(self, event):
         key = event.GetKeyCode()
-        if key == wx.WXK_RETURN:
+        if key == WXK_RETURN:
             self.BandWidthConversion(event)
 
-        elif key == wx.WXK_NUMPAD_ENTER:
+        elif key == WXK_NUMPAD_ENTER:
             self.BandWidthConversion(event)
 
         else:
@@ -660,10 +666,10 @@ class DeciPerc(wx.Panel):
             Conversion1_StaticBoxSizer = wx.StaticBoxSizer(Conversion1_StaticBox, wx.HORIZONTAL)
 
             # setup the radioButtons
-            Input_type1 = ['Disable', 'Decibel (dB)', 'Percentage (\u0025)']
-            self.rb11 = wx.RadioButton(self, 11, label=Input_type1[0], style=wx.RB_GROUP)
-            self.rb12 = wx.RadioButton(self, 12, label=Input_type1[1])
-            self.rb13 = wx.RadioButton(self, 13, label=Input_type1[2])
+            self.Input_type1 = ['Disable', 'Decibel (dB)', 'Percentage (\u0025)']
+            self.rb11 = wx.RadioButton(self, 11, label=self.Input_type1[0], style=wx.RB_GROUP)
+            self.rb12 = wx.RadioButton(self, 12, label=self.Input_type1[1])
+            self.rb13 = wx.RadioButton(self, 13, label=self.Input_type1[2])
 
 
             self.input_text_11 = wx.TextCtrl(self)
@@ -712,10 +718,10 @@ class DeciPerc(wx.Panel):
             Conversion2_StaticBoxSizer = wx.StaticBoxSizer(Conversion2_StaticBox, wx.HORIZONTAL)
 
             # setup the radioButtons
-            Input_type2 = ['Disable', 'Optical Power in dBm', 'Optical Power in mW']
-            self.rb21 = wx.RadioButton(self, 11, label=Input_type2[0], style=wx.RB_GROUP)
-            self.rb22 = wx.RadioButton(self, 12, label=Input_type2[1])
-            self.rb23 = wx.RadioButton(self, 13, label=Input_type2[2])
+            self.Input_type2 = ['Disable', 'Optical Power in dBm', 'Optical Power in mW ']
+            self.rb21 = wx.RadioButton(self, 11, label=self.Input_type2[0], style=wx.RB_GROUP)
+            self.rb22 = wx.RadioButton(self, 12, label=self.Input_type2[1])
+            self.rb23 = wx.RadioButton(self, 13, label=self.Input_type2[2])
 
 
             self.input_text_21 = wx.TextCtrl(self)
@@ -759,24 +765,24 @@ class DeciPerc(wx.Panel):
 
             BottomLayerSizer.Add(Conversion1_StaticBoxSizer, 0, wx.ALL | wx.EXPAND, 5)
             BottomLayerSizer.Add(Conversion2_StaticBoxSizer, 0, wx.ALL | wx.EXPAND, 5)
-
-
         BottomLayerSizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 5)
-    #
-        # ---------------add CONVERT button and bind Enter key-------------------------------------------------
-        # if True:
 
-    #
         # ---------------add author information-------------------------------------------------
         if True:
             BottomLayerSizer.AddStretchSpacer(1)
-            font_author_info = wx.Font(7, family=wx.ROMAN, style=wx.NORMAL, weight=wx.LIGHT,
+            font_author_info1 = wx.Font(15, family=wx.ROMAN, style=wx.NORMAL, weight=wx.BOLD,
                                        encoding=wx.FONTENCODING_SYSTEM)
-            author_info = 'By Xiaomin Nie, Copyright © 2020 Shenzhen, China'
-            author_text = wx.StaticText(self, label=author_info, style=wx.ALIGN_CENTRE)
-            author_text.SetFont(font_author_info)
-            BottomLayerSizer.Add(author_text, 0, wx.ALL | wx.EXPAND, 5)
-    #
+            author_info1 = '\u2717\u1320 \u27FF \u2600 \u21DC \u0BF6\u10EF'
+            author_text1 = wx.StaticText(self, label=author_info1, style=wx.ALIGN_CENTRE)
+            author_text1.SetFont(font_author_info1)
+            font_author_info2 = wx.Font(7, family=wx.ROMAN, style=wx.NORMAL, weight=wx.LIGHT,
+                                       encoding=wx.FONTENCODING_SYSTEM)
+            author_info2 = 'Copyright © 2021 Shenzhen, China'
+            author_text2 = wx.StaticText(self, label=author_info2, style=wx.ALIGN_CENTRE)
+            author_text2.SetFont(font_author_info2)
+            BottomLayerSizer.Add(author_text1, 0, wx.ALL | wx.EXPAND, 5)
+            BottomLayerSizer.Add(author_text2, 0, wx.ALL | wx.EXPAND, 5)
+
         # ---------------add statuBar for info display-------------------------------------------------
         if True:
             self.statusBar = wx.StatusBar(self, -1)  # 实例化 wx.StatusBar
@@ -789,135 +795,191 @@ class DeciPerc(wx.Panel):
 
         self.SetSizer(BottomLayerSizer)
         # BottomLayerSizer.Fit(self)
-    #
+
     def conversion1_RadioBox(self, event):
-        # defult input type is Disable
-        # self.conversion1_input_type = 'Disable'
-        # status = 'Please select an input type.'
-        # self.statusBar.SetStatusText(status, 0)
-        if event.GetEventObject().GetLabel() == 'Decibel (dB)':
-            self.conversion1_input_type = 'Decibel (dB)'
+
+        if event.GetEventObject().GetLabel() == self.Input_type1[1]:
+            self.conversion1_input_type = self.Input_type1[1]
             status = 'current input type is: Decibel (dB).'
             self.statusBar.SetStatusText(status, 0)
-        elif event.GetEventObject().GetLabel() == 'Percentage (\u0025)':
-            self.conversion1_input_type = 'Percentage (\u0025)'
+        elif event.GetEventObject().GetLabel() == self.Input_type1[2]:
+            self.conversion1_input_type = self.Input_type1[2]
             status = 'current input type is: Percentage (\u0025).'
             self.statusBar.SetStatusText(status, 0)
         else:
-            self.conversion1_input_type = 'Disable'
-            if self.conversion2_input_type == 'Disable':
+            self.conversion1_input_type = self.Input_type1[0]
+            if self.conversion2_input_type == self.Input_type2[0]:
                 status = 'Please select an input type.'
                 self.statusBar.SetStatusText(status, 0)
+            elif self.conversion2_input_type == self.Input_type2[1]:
+                status = 'current input type is: dBm.'
+                self.statusBar.SetStatusText(status, 0)
+            elif self.conversion2_input_type == self.Input_type2[2]:
+                status = 'current input type is: mW.'
+                self.statusBar.SetStatusText(status, 0)
+            else:
+                pass
         self.Enable_textinput1()
 
     def conversion2_RadioBox(self, event):
-        # defult input type is Disable
-        # self.conversion2_input_type = 'Disable'
-        # status = 'Please select an input type.'
-        # self.statusBar.SetStatusText(status, 0)
-        if event.GetEventObject().GetLabel() == 'Optical Power in dBm':
-            self.conversion2_input_type = 'Optical Power in dBm'
+
+        if event.GetEventObject().GetLabel() == self.Input_type2[1]:
+            self.conversion2_input_type = self.Input_type2[1]
             status = 'current input type is: dBm.'
             self.statusBar.SetStatusText(status, 0)
-        elif event.GetEventObject().GetLabel() == 'Optical Power in mW':
-            self.conversion2_input_type = 'Optical Power in mW'
+        elif event.GetEventObject().GetLabel() == self.Input_type2[2]:
+            self.conversion2_input_type = self.Input_type2[2]
             status = 'current input type is: mW.'
             self.statusBar.SetStatusText(status, 0)
         else:
-            self.conversion2_input_type = 'Disable'
-            if self.conversion1_input_type == 'Disable':
+            self.conversion2_input_type = self.Input_type2[0]
+            if self.conversion1_input_type == self.Input_type1[0]:
                 status = 'Please select an input type.'
                 self.statusBar.SetStatusText(status, 0)
-        self.Enable_textinput2()
+            elif self.conversion1_input_type == self.Input_type1[1]:
+                status = 'current input type is: Decibel (dB).'
+                self.statusBar.SetStatusText(status, 0)
+            elif self.conversion1_input_type == self.Input_type1[2]:
+                status = 'current input type is: Percentage (\u0025).'
+                self.statusBar.SetStatusText(status, 0)
+            else:
+                pass
 
+        self.Enable_textinput2()
 
     def Enable_textinput1(self):
         value_str = ''
-        if self.conversion1_input_type == 'Disable':
+        if self.conversion1_input_type == self.Input_type1[0]:
             self.input_text_11.Disable()
             self.input_text_12.Disable()
             self.input_text_11.SetValue(value_str)
             self.input_text_12.SetValue(value_str)
-        elif self.conversion1_input_type == 'Decibel (dB)':
+        elif self.conversion1_input_type == self.Input_type1[1]:
             self.input_text_11.Enable()
             self.input_text_12.Disable()
             self.input_text_12.SetValue(value_str)
+            self.input_text_11.SetValue(value_str)
         else:
             self.input_text_11.Disable()
             self.input_text_12.Enable()
             self.input_text_11.SetValue(value_str)
+            self.input_text_12.SetValue(value_str)
 
     def Enable_textinput2(self):
         value_str = ''
-        if self.conversion2_input_type == 'Disable':
+        if self.conversion2_input_type == self.Input_type2[0]:
             self.input_text_21.Disable()
             self.input_text_22.Disable()
             self.input_text_21.SetValue(value_str)
             self.input_text_22.SetValue(value_str)
-        elif self.conversion2_input_type == 'Optical Power in dBm':
+        elif self.conversion2_input_type == self.Input_type2[1]:
             self.input_text_21.Enable()
             self.input_text_22.Disable()
+            self.input_text_21.SetValue(value_str)
             self.input_text_22.SetValue(value_str)
         else:
             self.input_text_21.Disable()
             self.input_text_22.Enable()
             self.input_text_21.SetValue(value_str)
+            self.input_text_22.SetValue(value_str)
 
     def Conversion1(self, event):
-        # status = 'conversion1'
-        # self.statusBar.SetStatusText(status, 0)
-        if self.conversion1_input_type == 'Decibel (dB)':
+        conversion_completed = 0
+        if self.conversion1_input_type == self.Input_type1[1]:
             if not is_number(self.input_text_11.GetLineText(0)):
                 status = 'Please enter a valid value of Decibel.'
                 self.statusBar.SetStatusText(status, 0)
+                conversion_completed = 0
             else:
                 percentage = 10.0**(float(self.input_text_11.GetLineText(0))/10.0)*100
                 self.input_text_12.SetValue(str(round(percentage, 3)))
-        elif self.conversion1_input_type == 'Percentage (\u0025)':
-            if not is_number(self.input_text_12.GetLineText(0)):
-                status = 'Please enter a valid value of percentage.'
+                conversion_completed = 1
+                status = 'Conversion completed!'
                 self.statusBar.SetStatusText(status, 0)
+        elif self.conversion1_input_type == self.Input_type1[2]:
+            if not is_number(self.input_text_12.GetLineText(0)):
+                status = 'Please enter a valid value of Percentage.'
+                self.statusBar.SetStatusText(status, 0)
+                conversion_completed = 0
             else:
-                decibel = 10.0 * np.log10(float(self.input_text_12.GetLineText(0))/100.0)
+                decibel = 10.0 * log10(float(self.input_text_12.GetLineText(0))/100.0)
                 self.input_text_11.SetValue(str(round(decibel, 3)))
+                conversion_completed = 1
+                status = 'Conversion completed!'
+                self.statusBar.SetStatusText(status, 0)
+        else:
+            status = 'Nothing going on. Please select Percentage or Decibel.'
+            self.statusBar.SetStatusText(status, 0)
+            conversion_completed = 0
 
-
-
+        return conversion_completed
 
     def Conversion2(self, event):
-        # status = 'conversion2'
-        # self.statusBar.SetStatusText(status, 0)
-
-        if self.conversion2_input_type == 'Optical Power in dBm':
+        conversion_completed = 0
+        if self.conversion2_input_type == self.Input_type2[1]:
             if not is_number(self.input_text_21.GetLineText(0)):
-                status = 'Please enter a valid value of Decibel.'
+                status = 'Please enter a valid value of Optical Power in dBm.'
                 self.statusBar.SetStatusText(status, 0)
+                conversion_completed = 0
             else:
-                power_mW = 10.0**(float(self.input_text_21.GetLineText(0))/10.0)*100
+                power_mW = 10.0**(float(self.input_text_21.GetLineText(0))/10.0)
                 self.input_text_22.SetValue(str(round(power_mW, 3)))
-        elif self.conversion2_input_type == 'Optical Power in mW':
-            if not is_number(self.input_text_22.GetLineText(0)):
-                status = 'Please enter a valid value of percentage.'
+                conversion_completed = 1
+                status = 'Conversion completed!'
                 self.statusBar.SetStatusText(status, 0)
+        elif self.conversion2_input_type == self.Input_type2[2]:
+            if not is_number(self.input_text_22.GetLineText(0)):
+                status = 'Please enter a valid value of Optical Power in mW.'
+                self.statusBar.SetStatusText(status, 0)
+                conversion_completed = 0
             else:
-                power_dBm = 10.0 * np.log10(float(self.input_text_22.GetLineText(0)))
+                power_dBm = 10.0 * log10(float(self.input_text_22.GetLineText(0)))
                 self.input_text_21.SetValue(str(round(power_dBm, 3)))
+                conversion_completed = 1
+                status = 'Conversion completed!'
+                self.statusBar.SetStatusText(status, 0)
+
+        else:
+            status = 'Nothing going on. Please select dBm or mW.'
+            self.statusBar.SetStatusText(status, 0)
+            conversion_completed = 0
+        return conversion_completed
 
     def on_key(self, event):
         key = event.GetKeyCode()
         if key == wx.WXK_RETURN:
-            self.Conversion1(event)
+            conversion1_completed = self.Conversion1(event)
+            conversion2_completed = self.Conversion2(event)
+            if self.conversion1_input_type == self.Input_type1[0] and self.conversion2_input_type == self.Input_type2[0]:
+                status = 'Nothing to convert, please select an input!'
+                self.statusBar.SetStatusText(status, 0)
+            elif conversion1_completed == 1:
+                status = 'Conversion completed!'
+                self.statusBar.SetStatusText(status, 0)
+            elif conversion2_completed == 1:
+                status = 'Conversion completed!'
+                self.statusBar.SetStatusText(status, 0)
+            else:
+                pass
+
 
         elif key == wx.WXK_NUMPAD_ENTER:
-            self.Conversion1(event)
+            conversion1_completed = self.Conversion1(event)
+            conversion2_completed = self.Conversion2(event)
+            if self.conversion1_input_type == self.Input_type1[0] and self.conversion2_input_type == self.Input_type2[0]:
+                status = 'Nothing to convert, please select an input!'
+                self.statusBar.SetStatusText(status, 0)
+            elif conversion2_completed == 1 or conversion2_completed == 1:
+                status = 'Conversion completed!'
+                self.statusBar.SetStatusText(status, 0)
+            else:
+                pass
 
         else:
             event.Skip()
 
     def closeProgram(self):
         self.Close()
-
-
 
 # Run the program
 if __name__ == '__main__':
